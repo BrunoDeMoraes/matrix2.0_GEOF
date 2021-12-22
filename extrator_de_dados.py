@@ -7,6 +7,7 @@ controle = csv.reader(
     open('C:/Users/14343258/Desktop/Projeto Matrix 2.0/base_2020.csv'),
     delimiter=';'
 )
+
 fornecedores = csv.reader(open(
     'C:/Users/14343258/Desktop/Projeto Matrix 2.0/fornecedores.csv'),
     delimiter=';'
@@ -14,6 +15,11 @@ fornecedores = csv.reader(open(
 
 produto = csv.reader(open(
     'C:/Users/14343258/Desktop/Projeto Matrix 2.0/produtos_escape2.csv'),
+    delimiter=';'
+)
+
+nota_fiscal = csv.reader(open(
+    'C:/Users/14343258/PycharmProjects/matrix_2.0/arquivos csv/nota.csv'),
     delimiter=';'
 )
 
@@ -31,6 +37,11 @@ def conexao(comando_sql):
         cursor.close()
         con.close()
         print('Conexão encerrada.')
+
+def converte_data(data_original):
+    data = datetime.strptime(data_original, '%d/%m/%Y')
+    saida = f'{data.year}-{data.month}-{data.day}'
+    return saida
 
 def extrai_dados_processo_cotacao(planilha):
     for linha in planilha:
@@ -109,6 +120,72 @@ def extrai_dados_produto(planilha):
              ('{linha[0]}', '{linha[1]}', '{linha[3]}');'''
             conexao(comando)
 
-extrai_dados_processo_cotacao(controle)
+def extrai_dados_nota_fiscal(planilha):
+    for linha in planilha:
+        if (
+                linha[20] == ""
+                or linha[21] == ""
+                or linha[20] == "Nº DANFE"
+                or linha[21] == "Data DANFE"
+        ):
+            continue
+        else:
+            print(f'{linha[20]} - {linha[15]} - {linha[21]} - {linha[22]} - {linha[23]}')
+
+            data_danfe = converte_data(linha[21])
+            data_atesto = ""
+            data_entrada = ""
+            if linha[22] !="":
+                data_atesto = converte_data(linha[22])
+            if linha[23] != "":
+                data_entrada = converte_data(linha[23])
+
+            print(f'{linha[20]}, "{linha[15]}", {data_danfe}, {data_atesto}, {data_entrada}')
+
+            con = mysql.connector.connect(
+                host='localhost', database='matrix', user='root',
+                password='Mysqlhybris1#'
+            )
+            db_info = con.get_server_info()
+            print(f'Conectado ao servidor Mysql versão {db_info}')
+            cursor = con.cursor()
+
+            if data_atesto =="" and data_entrada == "":
+                comando = f'''insert into nota_fiscal 
+                (danfe, cnpj_forncecedor, data_da_danfe)
+                values 
+                ({linha[20]}, "{linha[15]}", "{data_danfe}");'''
+            elif data_atesto == "":
+                comando = f'''insert into nota_fiscal 
+                (danfe, cnpj_forncecedor, data_da_danfe, data_recebimento_sei) 
+                values 
+                ({linha[20]}, "{linha[15]}", "{data_danfe}", "{data_entrada}");'''
+            elif data_entrada == "":
+                comando = f'''insert into nota_fiscal 
+                (danfe, cnpj_forncecedor, data_da_danfe, data_do_atesto)
+                values
+                ({linha[20]}, "{linha[15]}", "{data_danfe}", "{data_atesto}");'''
+            else:
+                comando = f'''insert into nota_fiscal 
+                (danfe, cnpj_forncecedor, data_da_danfe, data_do_atesto, data_recebimento_sei) 
+                values 
+                ({linha[20]}, "{linha[15]}", "{data_danfe}", "{data_atesto}", "{data_entrada}");'''
+
+
+            if con.is_connected():
+                try:
+                    cursor.execute(comando)
+                    con.commit()
+                    print('Conexão encerrada.')
+                except Error as erro:
+                    print(f'Erro localizado - {erro}')
+                finally:
+                    if con.is_connected():
+                        cursor.close()
+                        con.close()
+                        print('Conexão encerrada.')
+
+#extrai_dados_processo_cotacao(controle)
 #extrai_dados_fornecedor(fornecedores)
 #extrai_dados_produto(produto)
+extrai_dados_nota_fiscal(nota_fiscal)
