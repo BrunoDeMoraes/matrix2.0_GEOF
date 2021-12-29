@@ -23,6 +23,16 @@ nota_fiscal = csv.reader(open(
     delimiter=';'
 )
 
+pagamento = csv.reader(open(
+    'C:/Users/14343258/PycharmProjects/matrix_2.0/arquivos csv/pagamento.csv'),
+    delimiter=';'
+)
+
+aquisicoes = csv.reader(open(
+    'C:/Users/14343258/PycharmProjects/matrix_2.0/arquivos csv/aquisicoes2.csv'),
+    delimiter=';'
+)
+
 def conexao(comando_sql):
     con = mysql.connector.connect(
         host='localhost', database='matrix', user='root',
@@ -185,7 +195,96 @@ def extrai_dados_nota_fiscal(planilha):
                         con.close()
                         print('Conexão encerrada.')
 
+
+def extrai_dados_de_pagamento(planilha):
+    for linha in planilha:
+        if (
+                linha[20] == ""
+                or linha[24] == ""
+                or linha[25] == ""
+                or linha[20] == "Nº DANFE"
+                or linha[26] == "A/A"
+        ):
+            continue
+        else:
+            print(f'{linha[24]} - {linha[25]} - {linha[20]} - {linha[26]}')
+
+            data_ted = converte_data(linha[25])
+            print(f'{linha[24]}, {data_ted}, {linha[20]}, {linha[26]}')
+
+            con = mysql.connector.connect(
+                host='localhost', database='matrix', user='root',
+                password='Mysqlhybris1#'
+            )
+            db_info = con.get_server_info()
+            print(f'Conectado ao servidor Mysql versão {db_info}')
+            cursor = con.cursor()
+
+            comando = f'''insert into pagamento 
+            (numero_ted, data_de_pagamento_ted, danfe, codigo_bimestre) 
+            values
+            ({linha[24]}, "{data_ted}", {linha[20]}, {linha[26]});'''
+
+            if con.is_connected():
+                try:
+                    cursor.execute(comando)
+                    con.commit()
+                    print('Conexão encerrada.')
+                except Error as erro:
+                    print(f'Erro localizado - {erro}')
+                finally:
+                    if con.is_connected():
+                        cursor.close()
+                        con.close()
+                        print('Conexão encerrada.')
+
+def extrai_dados_aquisicao(planilha):
+    for linha in planilha:
+        if (
+                linha[3] == ""
+                or linha[7] == ""
+                or linha[13] == ""
+                or linha[20] == ""
+        ):
+            continue
+        else:
+            print(f'{linha[3]} - {linha[7]} - {linha[13]} - {linha[17]} - {linha[16]} - {linha[19]} - {linha[15]} - {linha[20]}')
+
+            data_fechamento = converte_data(linha[19])
+            preco = str(linha[17]).replace(',', '.')
+
+            print(f'{linha[3]}, {linha[7]}, {linha[13]}, {preco}, {linha[16]}, "{data_fechamento}", {linha[15]}, {linha[20]}')
+
+            con = mysql.connector.connect(
+                host='localhost', database='matrix', user='root',
+                password='Mysqlhybris1#'
+            )
+            db_info = con.get_server_info()
+            print(f'Conectado ao servidor Mysql versão {db_info}')
+            cursor = con.cursor()
+
+            comando = f'''insert into aquisicao
+            (processo_sei, codigo_produto, quantidade_solicitada, preco_unitario, quantidade_adquirida, data_de_fechamento, cnpj_forncecedor, danfe)
+            values
+            ("{linha[3]}", {linha[7]}, {linha[13]}, "{float(preco)}", {linha[16]}, "{data_fechamento}", "{linha[15]}", {linha[20]});'''
+
+            if con.is_connected():
+                try:
+                    cursor.execute(comando)
+                    con.commit()
+                    print('Conexão encerrada.')
+                except Error as erro:
+                    print(f'Erro localizado - {erro}')
+                finally:
+                    if con.is_connected():
+                        cursor.close()
+                        con.close()
+                        print('Conexão encerrada.')
+
+
 #extrai_dados_processo_cotacao(controle)
 #extrai_dados_fornecedor(fornecedores)
 #extrai_dados_produto(produto)
-extrai_dados_nota_fiscal(nota_fiscal)
+#extrai_dados_nota_fiscal(nota_fiscal)
+#extrai_dados_de_pagamento(pagamento)
+extrai_dados_aquisicao(aquisicoes)
