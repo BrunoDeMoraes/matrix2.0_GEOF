@@ -33,6 +33,21 @@ aquisicoes = csv.reader(open(
     delimiter=';'
 )
 
+ddd = csv.reader(open(
+    'C:/Users/14343258/PycharmProjects/matrix_2.0/arquivos csv/ddd.csv'),
+    delimiter=';'
+)
+
+banco = csv.reader(open(
+    'C:/Users/14343258/PycharmProjects/matrix_2.0/arquivos csv/banco.csv'),
+    delimiter=';'
+)
+
+conta_bancaria =  csv.reader(open(
+    'C:/Users/14343258/PycharmProjects/matrix_2.0/arquivos csv/conta_corrente.csv'),
+    delimiter=';'
+)
+
 def conexao(comando_sql):
     con = mysql.connector.connect(
         host='localhost', database='matrix', user='root',
@@ -281,10 +296,239 @@ def extrai_dados_aquisicao(planilha):
                         con.close()
                         print('Conexão encerrada.')
 
+def extrai_dados_ddd(planilha):
+    for linha in planilha:
+        if linha[0] == "":
+            continue
+        else:
+            print(f'{linha[0]} - {linha[1]} - {linha[2]}')
+            con = mysql.connector.connect(
+                host='localhost', database='matrix', user='root',
+                password='Mysqlhybris1#'
+            )
+            db_info = con.get_server_info()
+            print(f'Conectado ao servidor Mysql versão {db_info}')
+            cursor = con.cursor()
+
+            comando = f'''insert into ddd
+            (codigo_de_area, estado, descricao)
+            values
+            ("{linha[0]}", "{linha[1]}", "{linha[2]}");'''
+
+            if con.is_connected():
+                try:
+                    cursor.execute(comando)
+                    con.commit()
+                    print('Conexão encerrada.')
+                except Error as erro:
+                    print(f'Erro localizado - {erro}')
+                finally:
+                    if con.is_connected():
+                        cursor.close()
+                        con.close()
+                        print('Conexão encerrada.')
+
+def extrai_dados_telefone(planilha):
+    for linha in planilha:
+        if (
+                linha[3] == ""
+                or (linha[4] == "" and linha[5] == "")
+                or linha[7] == ""
+        ):
+            continue
+        elif (not linha[4] == "" and not linha[5] == ""):
+            registros = (linha[4], linha[5])
+            for registro in registros:
+                con = mysql.connector.connect(
+                    host='localhost', database='matrix', user='root',
+                    password='Mysqlhybris1#'
+                )
+                db_info = con.get_server_info()
+                print(f'Conectado ao servidor Mysql versão {db_info}')
+                cursor = con.cursor()
+
+                comando = f'''insert into telefone
+                            (codigo_de_area, numero_telefone, nome_contato, cnpj_forncecedor)
+                            values
+                            ("{linha[3]}", "{registro}", "{linha[2]}", "{linha[7]}");'''
+
+                if con.is_connected():
+                    try:
+                        cursor.execute(comando)
+                        con.commit()
+                        print('Conexão encerrada.')
+                    except Error as erro:
+                        print(f'Erro localizado - {erro}')
+                    finally:
+                        if con.is_connected():
+                            cursor.close()
+                            con.close()
+                            print('Conexão encerrada.')
+
+        elif (linha[4] == "" and not linha[5] == ""):
+            con = mysql.connector.connect(
+                host='localhost', database='matrix', user='root',
+                password='Mysqlhybris1#'
+            )
+            db_info = con.get_server_info()
+            print(f'Conectado ao servidor Mysql versão {db_info}')
+            cursor = con.cursor()
+
+            comando = f'''insert into telefone (codigo_de_area, numero_telefone, nome_contato, cnpj_forncecedor) 
+            values
+            ("{linha[3]}", "{linha[5]}", "{linha[2]}", "{linha[7]}");'''
+
+            if con.is_connected():
+                try:
+                    cursor.execute(comando)
+                    con.commit()
+                    print('Conexão encerrada.')
+                except Error as erro:
+                    print(f'Erro localizado - {erro}')
+                finally:
+                    if con.is_connected():
+                        cursor.close()
+                        con.close()
+                        print('Conexão encerrada.')
+        else:
+            con = mysql.connector.connect(
+                host='localhost', database='matrix', user='root',
+                password='Mysqlhybris1#'
+            )
+            db_info = con.get_server_info()
+            print(f'Conectado ao servidor Mysql versão {db_info}')
+            cursor = con.cursor()
+
+            comando = f'''insert into telefone
+            (codigo_de_area, numero_telefone, nome_contato, cnpj_forncecedor)
+            values
+            ("{linha[3]}", "{linha[4]}", "{linha[2]}", "{linha[7]}");'''
+
+            if con.is_connected():
+                try:
+                    cursor.execute(comando)
+                    con.commit()
+                    print('Conexão encerrada.')
+                except Error as erro:
+                    print(f'Erro localizado - {erro}')
+                finally:
+                    if con.is_connected():
+                        cursor.close()
+                        con.close()
+                        print('Conexão encerrada.')
+
+def extrai_dados_banco(planilha):
+
+    for linha in planilha:
+        if (
+                linha[9] == ""
+                or linha[9] == "CADASTRAR"
+        ):
+            continue
+        else:
+            print(f'{linha[9]} - {linha[8]}')
+            con = mysql.connector.connect(
+                host='localhost', database='matrix', user='root',
+                password='Mysqlhybris1#'
+            )
+            db_info = con.get_server_info()
+            print(f'Conectado ao servidor Mysql versão {db_info}')
+            cursor = con.cursor()
+
+            comando = f'''insert into banco
+            (codigo_bancario, nome_banco)
+            values
+            ("{linha[9]}", "{linha[8].capitalize()}");'''
+
+            if con.is_connected():
+                try:
+                    cursor.execute(comando)
+                    con.commit()
+                    print('Conexão encerrada.')
+                except Error as erro:
+                    print(f'Erro localizado - {erro}')
+                finally:
+                    if con.is_connected():
+                        cursor.close()
+                        con.close()
+                        print('Conexão encerrada.')
+
+
+def extrai_dados_conta_bancaria(planilha):
+
+    for linha in planilha:
+        if (
+                linha[9] == ""
+                or linha[10] == ""
+                or linha[11] == ""
+                or linha[7] == ""
+                or linha[9] == "CADASTRAR"
+        ):
+            continue
+        else:
+            if linha[9] == "104":
+                print(f'conta caixa - {linha[9]} - {linha[10]} - {linha[11]} - {linha[12]} - {linha[7]}')
+                con = mysql.connector.connect(
+                    host='localhost', database='matrix', user='root',
+                    password='Mysqlhybris1#'
+                )
+                db_info = con.get_server_info()
+                print(f'Conectado ao servidor Mysql versão {db_info}')
+                cursor = con.cursor()
+
+                comando = f'''insert into conta_bancaria
+                (codigo_bancario, agencia, conta_corrente, operacao_caixa, cnpj_forncecedor)
+                values
+                ("{linha[9]}", "{linha[10]}", "{linha[11]}", "{linha[12]}", "{linha[7]}");'''
+
+                if con.is_connected():
+                    try:
+                        cursor.execute(comando)
+                        con.commit()
+                        print('Conexão encerrada.')
+                    except Error as erro:
+                        print(f'Erro localizado - {erro}')
+                    finally:
+                        if con.is_connected():
+                            cursor.close()
+                            con.close()
+                            print('Conexão encerrada.')
+            else:
+                print(f'conta outro - {linha[9]} - {linha[10]} - {linha[11]} - não tem operação - {linha[7]}')
+                con = mysql.connector.connect(
+                    host='localhost', database='matrix', user='root',
+                    password='Mysqlhybris1#'
+                )
+                db_info = con.get_server_info()
+                print(f'Conectado ao servidor Mysql versão {db_info}')
+                cursor = con.cursor()
+
+                comando = f'''insert into conta_bancaria
+                                (codigo_bancario, agencia, conta_corrente, cnpj_forncecedor)
+                                values
+                                ("{linha[9]}", "{linha[10]}", "{linha[11]}", "{linha[7]}");'''
+
+                if con.is_connected():
+                    try:
+                        cursor.execute(comando)
+                        con.commit()
+                        print('Conexão encerrada.')
+                    except Error as erro:
+                        print(f'Erro localizado - {erro}')
+                    finally:
+                        if con.is_connected():
+                            cursor.close()
+                            con.close()
+                            print('Conexão encerrada.')
 
 #extrai_dados_processo_cotacao(controle)
 #extrai_dados_fornecedor(fornecedores)
 #extrai_dados_produto(produto)
 #extrai_dados_nota_fiscal(nota_fiscal)
 #extrai_dados_de_pagamento(pagamento)
-extrai_dados_aquisicao(aquisicoes)
+#extrai_dados_aquisicao(aquisicoes)
+#extrai_dados_ddd(ddd)
+#extrai_dados_telefone(fornecedores)
+#extrai_dados_banco(banco)
+extrai_dados_conta_bancaria(conta_bancaria)
+
