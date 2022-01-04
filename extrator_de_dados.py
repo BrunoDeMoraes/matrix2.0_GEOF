@@ -48,6 +48,11 @@ conta_bancaria =  csv.reader(open(
     delimiter=';'
 )
 
+email = csv.reader(open(
+    'C:/Users/14343258/PycharmProjects/matrix_2.0/arquivos csv/email.csv',  errors='ignore'),
+    delimiter=';'
+)
+
 def conexao(comando_sql):
     con = mysql.connector.connect(
         host='localhost', database='matrix', user='root',
@@ -521,6 +526,149 @@ def extrai_dados_conta_bancaria(planilha):
                             con.close()
                             print('Conexão encerrada.')
 
+def extrai_grupo_de_email(planilha):
+    campos = [
+        'Acrilico',
+        'Diversos',
+        'Eletrica, Hidraúlica, Marcenaria, Serralheria',
+        'Equipamentos - Peças e Serviços',
+        'Fios de Sutura',
+        'Fisioterapia',
+        'Gases Medicinais',
+        'Instrumental Cirúrgico',
+        'Laboratório',
+        'Lavanderia, Hotelaria',
+        'Medicamentos',
+        'Material Medico',
+        'Odonto',
+        'Papelaria e Informática',
+        'Radiologia',
+        'Serviços Gráficos',
+        'Dedetização']
+    for campo in campos:
+        print(f'{campo}')
+        con = mysql.connector.connect(
+            host='localhost', database='matrix', user='root',
+            password='Mysqlhybris1#'
+        )
+        db_info = con.get_server_info()
+        print(f'Conectado ao servidor Mysql versão {db_info}')
+        cursor = con.cursor()
+
+        comando = f'''insert into grupo_de_email
+                        (grupo)
+                        values
+                        ("{campo}");'''
+
+        if con.is_connected():
+            try:
+                cursor.execute(comando)
+                con.commit()
+                print('Conexão encerrada.')
+            except Error as erro:
+                print(f'Erro localizado - {erro}')
+            finally:
+                if con.is_connected():
+                    cursor.close()
+                    con.close()
+                    print('Conexão encerrada.')
+
+def extrai_dados_email(planilha):
+    codigo_campos = {
+        'Acrilico': 1,
+        'Diversos': 2,
+        'Eletrica, Hidraúlica, Marcenaria, Serralheria': 3,
+        'Equipamentos - Peças e Serviços': 4,
+        'Fios de Sutura': 5,
+        'Fisioterapia': 6,
+        'Gases Medicinais': 7,
+        'Instrumental Cirúrgico': 8,
+        'Laboratório': 9,
+        'Lavanderia, Hotelaria': 10,
+        'Medicamentos': 11,
+        'Material Medico': 12,
+        'Odonto': 13,
+        'Papelaria e Informática': 14,
+        'Radiologia': 15,
+        'Serviços Gráficos': 16,
+        'Dedetização': 17}
+    id = 1
+    for linha in planilha:
+        if (
+                linha[0] == "Name"
+                or linha[0] == ""
+        ):
+            continue
+        else:
+
+            print(f'{linha[0]} - {linha[18]}')
+
+            contador = 0
+            grupo = []
+            for registro in linha:
+                if registro == "X":
+                    grupo.append(contador)
+                    contador += 1
+                else:
+                    contador += 1
+            print(grupo)
+
+            con = mysql.connector.connect(
+                host='localhost', database='matrix', user='root',
+                password='Mysqlhybris1#'
+            )
+            db_info = con.get_server_info()
+            print(f'Conectado ao servidor Mysql versão {db_info}')
+            cursor = con.cursor()
+
+            comando = f'''insert into email
+            (descricao_do_email, endereco_email)
+            values
+            ("{linha[0]}", "{linha[18]}");'''
+
+            if con.is_connected():
+                try:
+                    cursor.execute(comando)
+                    con.commit()
+                    print('Conexão encerrada.')
+                except Error as erro:
+                    print(f'Erro localizado - {erro}')
+                finally:
+                    if con.is_connected():
+                        cursor.close()
+                        con.close()
+                        print('Conexão encerrada.')
+
+            for elemento in grupo:
+                con = mysql.connector.connect(
+                    host='localhost', database='matrix', user='root',
+                    password='Mysqlhybris1#'
+                )
+                db_info = con.get_server_info()
+                print(f'Conectado ao servidor Mysql versão {db_info}')
+                cursor = con.cursor()
+
+                comando = f'''insert into email_grupo
+                            (id_grupo, email_id)
+                            values
+                            ("{elemento}", "{id}");'''
+
+                if con.is_connected():
+                    try:
+                        cursor.execute(comando)
+                        con.commit()
+                        print('Conexão encerrada.')
+                    except Error as erro:
+                        print(f'Erro localizado - {erro}')
+                    finally:
+                        if con.is_connected():
+                            cursor.close()
+                            con.close()
+                            print('Conexão encerrada.')
+
+        id += 1
+
+
 #extrai_dados_processo_cotacao(controle)
 #extrai_dados_fornecedor(fornecedores)
 #extrai_dados_produto(produto)
@@ -530,5 +678,7 @@ def extrai_dados_conta_bancaria(planilha):
 #extrai_dados_ddd(ddd)
 #extrai_dados_telefone(fornecedores)
 #extrai_dados_banco(banco)
-extrai_dados_conta_bancaria(conta_bancaria)
+#extrai_dados_conta_bancaria(conta_bancaria)
+#extrai_grupo_de_email(email)
+extrai_dados_email(email)
 
