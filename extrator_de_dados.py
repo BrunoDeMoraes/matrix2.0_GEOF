@@ -56,7 +56,7 @@ email = csv.reader(open(
 def conexao(comando_sql):
     con = mysql.connector.connect(
         host='localhost', database='matrix', user='root',
-        password='Mysqlhybris1#'
+        password='***'
     )
     db_info = con.get_server_info()
     print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -91,7 +91,7 @@ def extrai_dados_processo_cotacao(planilha):
             print(entrada)
             con = mysql.connector.connect(
                 host='localhost', database='matrix', user='root',
-                password='Mysqlhybris1#'
+                password='***'
             )
             db_info = con.get_server_info()
             print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -174,7 +174,7 @@ def extrai_dados_nota_fiscal(planilha):
 
             con = mysql.connector.connect(
                 host='localhost', database='matrix', user='root',
-                password='Mysqlhybris1#'
+                password='***'
             )
             db_info = con.get_server_info()
             print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -234,7 +234,7 @@ def extrai_dados_de_pagamento(planilha):
 
             con = mysql.connector.connect(
                 host='localhost', database='matrix', user='root',
-                password='Mysqlhybris1#'
+                password='***'
             )
             db_info = con.get_server_info()
             print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -277,7 +277,7 @@ def extrai_dados_aquisicao(planilha):
 
             con = mysql.connector.connect(
                 host='localhost', database='matrix', user='root',
-                password='Mysqlhybris1#'
+                password='***'
             )
             db_info = con.get_server_info()
             print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -309,7 +309,7 @@ def extrai_dados_ddd(planilha):
             print(f'{linha[0]} - {linha[1]} - {linha[2]}')
             con = mysql.connector.connect(
                 host='localhost', database='matrix', user='root',
-                password='Mysqlhybris1#'
+                password='***'
             )
             db_info = con.get_server_info()
             print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -346,7 +346,7 @@ def extrai_dados_telefone(planilha):
             for registro in registros:
                 con = mysql.connector.connect(
                     host='localhost', database='matrix', user='root',
-                    password='Mysqlhybris1#'
+                    password='***'
                 )
                 db_info = con.get_server_info()
                 print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -373,7 +373,7 @@ def extrai_dados_telefone(planilha):
         elif (linha[4] == "" and not linha[5] == ""):
             con = mysql.connector.connect(
                 host='localhost', database='matrix', user='root',
-                password='Mysqlhybris1#'
+                password='***'
             )
             db_info = con.get_server_info()
             print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -398,7 +398,7 @@ def extrai_dados_telefone(planilha):
         else:
             con = mysql.connector.connect(
                 host='localhost', database='matrix', user='root',
-                password='Mysqlhybris1#'
+                password='***'
             )
             db_info = con.get_server_info()
             print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -434,7 +434,7 @@ def extrai_dados_banco(planilha):
             print(f'{linha[9]} - {linha[8]}')
             con = mysql.connector.connect(
                 host='localhost', database='matrix', user='root',
-                password='Mysqlhybris1#'
+                password='***'
             )
             db_info = con.get_server_info()
             print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -475,7 +475,7 @@ def extrai_dados_conta_bancaria(planilha):
                 print(f'conta caixa - {linha[9]} - {linha[10]} - {linha[11]} - {linha[12]} - {linha[7]}')
                 con = mysql.connector.connect(
                     host='localhost', database='matrix', user='root',
-                    password='Mysqlhybris1#'
+                    password='***'
                 )
                 db_info = con.get_server_info()
                 print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -502,7 +502,7 @@ def extrai_dados_conta_bancaria(planilha):
                 print(f'conta outro - {linha[9]} - {linha[10]} - {linha[11]} - não tem operação - {linha[7]}')
                 con = mysql.connector.connect(
                     host='localhost', database='matrix', user='root',
-                    password='Mysqlhybris1#'
+                    password='***'
                 )
                 db_info = con.get_server_info()
                 print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -549,7 +549,7 @@ def extrai_grupo_de_email(planilha):
         print(f'{campo}')
         con = mysql.connector.connect(
             host='localhost', database='matrix', user='root',
-            password='Mysqlhybris1#'
+            password='***'
         )
         db_info = con.get_server_info()
         print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -615,7 +615,7 @@ def extrai_dados_email(planilha):
 
             con = mysql.connector.connect(
                 host='localhost', database='matrix', user='root',
-                password='Mysqlhybris1#'
+                password='***'
             )
             db_info = con.get_server_info()
             print(f'Conectado ao servidor Mysql versão {db_info}')
@@ -642,7 +642,7 @@ def extrai_dados_email(planilha):
             for elemento in grupo:
                 con = mysql.connector.connect(
                     host='localhost', database='matrix', user='root',
-                    password='Mysqlhybris1#'
+                    password='***'
                 )
                 db_info = con.get_server_info()
                 print(f'Conectado ao servidor Mysql versão {db_info}')
